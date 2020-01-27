@@ -128,6 +128,7 @@ def main(argv):
         connection = "probe"
 
     values = {
+        "num_harts": len(dts.get_by_path("/cpus").children),
         "ram": get_ram(dts),
         "flash": get_flash(dts),
         "connection": connection,
