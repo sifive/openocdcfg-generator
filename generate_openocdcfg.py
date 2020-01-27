@@ -15,6 +15,8 @@ TEMPLATES_PATH = "templates"
 SUPPORTED_BOARDS = ["arty", "vc707", "hifive"]
 SUPPORTED_PROTOCOLS = ["jtag", "cjtag"]
 
+WORK_AREA_SIZE_MAX = 10000
+
 
 def missingvalue(message):
     """
@@ -86,6 +88,10 @@ def get_ram(tree):
             reg = node.get_reg()
             base = reg[region][0] + offset
             size = reg[region][1] - offset
+
+            # Clamp at WORK_AREA_SIZE_MAX
+            size = min(size, WORK_AREA_SIZE_MAX)
+
             return {"base": base, "size": size}
         return None
     return None
