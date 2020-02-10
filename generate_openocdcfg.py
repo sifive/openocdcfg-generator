@@ -77,6 +77,16 @@ def get_template(parsed_args):
     return template
 
 
+def is_homogeneous(tree):
+    """Returns True if all harts of the design are homogeneous"""
+    harts = tree.get_by_path("/cpus").children
+
+    num_isas = len({hart.get_field("riscv,isa") for hart in harts})
+    mmu_types = len({hart.get_field("mmu-type") for hart in harts})
+
+    return num_isas == 1 and mmu_types == 1
+
+
 def get_ram(tree):
     """Get the base and size of the RAM to use as the OpenOCD work area"""
     metal_ram = tree.chosen("metal,ram")
@@ -133,8 +143,14 @@ def main(argv):
     else:
         connection = "probe"
 
+    if is_homogeneous(dts):
+        num_harts = len(dts.get_by_path("/cpus").children)
+    else:
+        print("WARNING: Heterogeneous design, emitting config for hart 0", file=sys.stderr)
+        num_harts = 1
+
     values = {
-        "num_harts": len(dts.get_by_path("/cpus").children),
+        "num_harts": num_harts,
         "ram": get_ram(dts),
         "flash": get_flash(dts),
         "connection": connection,
