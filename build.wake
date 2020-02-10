@@ -18,7 +18,7 @@ def generatorDir = here
 # makeOpenOCDConfigGeneratorOptions takes the following parameters:
 #   - topDTSFile: The top-level Devicetree source file
 #   - otherDTSFiles: any other Devicetree source files included in the
-#                    heirarchy of Devicetree source files
+#                    hierarchy of Devicetree source files
 #   - type: One of {arty, vc707, hifive}
 #   - outputFile: A string representing the path of the output file to
 #                 produce
