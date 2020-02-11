@@ -82,9 +82,36 @@ def is_homogeneous(tree):
     harts = tree.get_by_path("/cpus").children
 
     num_isas = len({hart.get_field("riscv,isa") for hart in harts})
-    mmu_types = len({hart.get_field("mmu-type") for hart in harts})
 
-    return num_isas == 1 and mmu_types == 1
+    return num_isas == 1
+
+
+def isa_is_subset(isa_a, isa_b):
+    """Returns True if ISA a is a subset of ISA b"""
+    bitness_a = isa_a[2:3]
+    bitness_b = isa_b[2:3]
+
+    ext_a = isa_a[3:]
+    ext_b = isa_b[3:]
+
+    for ext in ext_a:
+        if ext not in ext_b:
+            return False
+
+    return bitness_a == bitness_b
+
+
+def boot_hart_is_subset(tree):
+    """Returns True if the requested boot hart implements an ISA subset
+       which is common to all harts"""
+
+    boot_hart = tree.get_by_reference(tree.chosen("metal,boothart")[0])
+    harts = tree.get_by_path("/cpus").children
+
+    boot_hart_isa = boot_hart.get_field("riscv,isa")
+    isas = {hart.get_field("riscv,isa") for hart in harts}
+
+    return all([isa_is_subset(boot_hart_isa, other) for other in isas])
 
 
 def get_ram(tree):
@@ -143,7 +170,7 @@ def main(argv):
     else:
         connection = "probe"
 
-    if is_homogeneous(dts):
+    if is_homogeneous(dts) or boot_hart_is_subset(dts):
         num_harts = len(dts.get_by_path("/cpus").children)
     else:
         print("WARNING: Heterogeneous design, emitting config for hart 0", file=sys.stderr)
