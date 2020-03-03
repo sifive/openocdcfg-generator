@@ -12,7 +12,7 @@ import pydevicetree
 
 TEMPLATES_PATH = "templates"
 
-SUPPORTED_BOARDS = ["arty", "vc707", "hifive"]
+SUPPORTED_BOARDS = ["arty", "vc707", "vcu118", "hifive"]
 SUPPORTED_PROTOCOLS = ["jtag", "cjtag"]
 
 WORK_AREA_SIZE_MAX = 10000
@@ -65,7 +65,7 @@ def get_template(parsed_args):
     env.globals["missingvalue"] = missingvalue
     env.filters["format_hex"] = format_hex
 
-    if "arty" in parsed_args.board or "vc707" in parsed_args.board:
+    if "arty" in parsed_args.board or "vc707" in parsed_args.board or "vcu118" in parsed_args.board:
         template = env.get_template("fpga.cfg")
     elif "hifive" in parsed_args.board:
         template = env.get_template("hifive.cfg")
