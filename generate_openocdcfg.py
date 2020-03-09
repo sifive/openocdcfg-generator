@@ -102,11 +102,13 @@ def get_flash(tree):
     metal_entry = tree.chosen("metal,entry")
     if metal_entry:
         node = tree.get_by_reference(metal_entry[0])
-        if node and "sifive,spi" in node.get_field("compatible"):
-            reg = node.get_reg()
-            mem_base = reg.get_by_name("mem")[0]
-            control_base = reg.get_by_name("control")[0]
-            return {"mem_base": mem_base, "control_base": control_base}
+        if node:
+            compatible = node.get_field("compatible")
+            if compatible and "sifive,spi" in compatible:
+                reg = node.get_reg()
+                mem_base = reg.get_by_name("mem")[0]
+                control_base = reg.get_by_name("control")[0]
+                return {"mem_base": mem_base, "control_base": control_base}
         return None
     return None
 
