@@ -122,6 +122,11 @@ def main(argv):
     dts = pydevicetree.Devicetree.parseFile(
         parsed_args.dts, followIncludes=True)
 
+    if "vcu118" in parsed_args.board:
+        adapter_khz = 1000
+    else:
+        adapter_khz = 10000
+
     if parsed_args.protocol:
         if parsed_args.protocol not in SUPPORTED_PROTOCOLS:
             print("Protocol %s in not supported" % protocol, file=sys.stderr)
@@ -138,6 +143,7 @@ def main(argv):
     num_harts = len(dts.get_by_path("/cpus").children)
 
     values = {
+        "adapter_khz": adapter_khz,
         "num_harts": num_harts,
         "ram": get_ram(dts),
         "flash": get_flash(dts),
