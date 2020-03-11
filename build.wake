@@ -23,8 +23,8 @@ def generatorDir = here
 #   - outputFile: A string representing the path of the output file to
 #                 produce
 #######################################################################
-global def makeOpenOCDConfigGeneratorOptions topDTSFile otherDTSFiles type outputFile =
-  OpenOCDConfigGeneratorOptions topDTSFile otherDTSFiles type outputFile "jtag" False
+global def makeOpenOCDConfigGeneratorOptions topDTSFile otherDTSFiles type_ outputFile =
+  OpenOCDConfigGeneratorOptions topDTSFile otherDTSFiles type_ outputFile "jtag" False
 
 global def runOpenOCDConfigGenerator options =
   def topDTSFile = options.getOpenOCDConfigGeneratorOptionsTopDTSFile
@@ -44,7 +44,7 @@ global def runOpenOCDConfigGenerator options =
       "-o", options.getOpenOCDConfigGeneratorOptionsOutputFile,
       Nil
 
-    def type =
+    def type_ =
       "-b", options.getOpenOCDConfigGeneratorOptionsType,
       Nil
 
@@ -61,7 +61,7 @@ global def runOpenOCDConfigGenerator options =
         True = "-t", Nil
         False = Nil
 
-    output ++ type ++ dts ++ protocol ++ tunnel
+    output ++ type_ ++ dts ++ protocol ++ tunnel
 
   makePlan (pythonCommand "{generatorDir}/generate_openocdcfg.py" args) inputs
   | addPlanRelativePath "PYTHONPATH" generatorDir
