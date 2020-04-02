@@ -12,7 +12,7 @@ import pydevicetree
 
 TEMPLATES_PATH = "templates"
 
-SUPPORTED_BOARDS = ["arty", "vc707", "hifive"]
+SUPPORTED_BOARDS = ["arty", "vc707", "vcu118", "hifive"]
 SUPPORTED_PROTOCOLS = ["jtag", "cjtag"]
 
 WORK_AREA_SIZE_MAX = 10000
@@ -65,7 +65,7 @@ def get_template(parsed_args):
     env.globals["missingvalue"] = missingvalue
     env.filters["format_hex"] = format_hex
 
-    if "arty" in parsed_args.board or "vc707" in parsed_args.board:
+    if "arty" in parsed_args.board or "vc707" in parsed_args.board or "vcu118" in parsed_args.board:
         template = env.get_template("fpga.cfg")
     elif "hifive" in parsed_args.board:
         template = env.get_template("hifive.cfg")
@@ -102,11 +102,13 @@ def get_flash(tree):
     metal_entry = tree.chosen("metal,entry")
     if metal_entry:
         node = tree.get_by_reference(metal_entry[0])
-        if node and "sifive,spi" in node.get_field("compatible"):
-            reg = node.get_reg()
-            mem_base = reg.get_by_name("mem")[0]
-            control_base = reg.get_by_name("control")[0]
-            return {"mem_base": mem_base, "control_base": control_base}
+        if node:
+            compatible = node.get_field("compatible")
+            if compatible and "sifive,spi" in compatible:
+                reg = node.get_reg()
+                mem_base = reg.get_by_name("mem")[0]
+                control_base = reg.get_by_name("control")[0]
+                return {"mem_base": mem_base, "control_base": control_base}
         return None
     return None
 
@@ -119,6 +121,11 @@ def main(argv):
 
     dts = pydevicetree.Devicetree.parseFile(
         parsed_args.dts, followIncludes=True)
+
+    if "vcu118" in parsed_args.board:
+        adapter_khz = 2000
+    else:
+        adapter_khz = 10000
 
     if parsed_args.protocol:
         if parsed_args.protocol not in SUPPORTED_PROTOCOLS:
@@ -136,6 +143,7 @@ def main(argv):
     num_harts = len(dts.get_by_path("/cpus").children)
 
     values = {
+        "adapter_khz": adapter_khz,
         "num_harts": num_harts,
         "ram": get_ram(dts),
         "flash": get_flash(dts),
