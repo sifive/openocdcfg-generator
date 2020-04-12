@@ -12,7 +12,7 @@ import pydevicetree
 
 TEMPLATES_PATH = "templates"
 
-SUPPORTED_BOARDS = ["arty", "vc707", "vcu118", "hifive"]
+SUPPORTED_BOARDS = ["arty", "vc707", "vcu118", "hifive", "hifive1-revb"]
 SUPPORTED_PROTOCOLS = ["jtag", "cjtag"]
 
 WORK_AREA_SIZE_MAX = 10000
@@ -67,6 +67,8 @@ def get_template(parsed_args):
 
     if "arty" in parsed_args.board or "vc707" in parsed_args.board or "vcu118" in parsed_args.board:
         template = env.get_template("fpga.cfg")
+    elif "hifive1-revb" in parsed_args.board:
+        template = env.get_template("hifive1-revb.cfg")
     elif "hifive" in parsed_args.board:
         template = env.get_template("hifive.cfg")
     else:
@@ -124,6 +126,8 @@ def main(argv):
 
     if "vcu118" in parsed_args.board:
         adapter_khz = 2000
+    elif "hifive1-revb" in parsed_args.board:
+        adapter_khz = 4000
     else:
         adapter_khz = 10000
 
