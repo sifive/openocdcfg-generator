@@ -72,3 +72,24 @@ global def runOpenOCDConfigGenerator options =
 # This allows the python virtualenv to be created prior to running a build
 # with `wake preinstall Unit`.
 publish preinstall = (pythonRequirementsInstaller generatorDir), Nil
+
+#########################################################################
+# installOpenOCDConfigGenerator allows wake flows to install the
+# OpenOCD configuration generator in customer deliveries and exclude all
+# content which  does not directly contribute to the generation of
+# customer BSP content.
+# It takes the following parameter
+#   - installPath: the path to install the generator in
+# For example, if you call `installOpenOCDConfigGenerator "scripts"`
+# the generator script will be found in
+#   scripts/openocdcfg-generator/generate_openocdcfg.py
+#########################################################################
+global target installOpenOCDConfigGenerator installPath =
+  def generatorSources =
+    source "{here}/README.md",
+    source "{here}/LICENSE",
+    source "{here}/generate_openocdcfg.py",
+    sources "{here}/templates" `.*\.cfg`
+
+  mkdir installPath,
+  map (installIn installPath) generatorSources
