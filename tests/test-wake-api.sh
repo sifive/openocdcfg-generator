@@ -9,7 +9,7 @@ OUTPUT_PATH="build/openocdcfg-generator/openocd.cfg"
 
 wake --init .
 
-wake -v "runOpenOCDConfigGenerator (makeOpenOCDConfigGeneratorOptions (source \"${HIFIVE1_DTS_DIR}/design.dts\") (sources \"${HIFIVE1_DTS_DIR}\" \`core.dts\`) \"hifive\" \"${OUTPUT_PATH}\")"
+wake -v -x "runOpenOCDConfigGenerator (makeOpenOCDConfigGeneratorOptions (source \"${HIFIVE1_DTS_DIR}/design.dts\") (sources \"${HIFIVE1_DTS_DIR}\" \`core.dts\`) \"hifive\" \"${OUTPUT_PATH}\")"
 
 >&2 echo "$0: Checking for ${OUTPUT_PATH}"
 if [ ! -f ${OUTPUT_PATH} ] ; then
