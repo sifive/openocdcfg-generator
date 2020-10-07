@@ -90,6 +90,9 @@ global target installOpenOCDConfigGenerator installPath =
     source "{here}/LICENSE",
     source "{here}/generate_openocdcfg.py",
     sources "{here}/templates" `.*\.cfg`
-
+  def installWithStructure dir file =
+    def oneDown = simplify "{here}/.."
+    def into = "{dir}/{relative oneDown file.getPathName}"
+    installAs into file
   mkdir installPath,
-  map (installIn installPath) generatorSources
+  map (installWithStructure installPath) generatorSources
