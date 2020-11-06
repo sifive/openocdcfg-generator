@@ -18,7 +18,7 @@ if [ ! -f ${OUTPUT_PATH} ] ; then
 fi
 
 >&2 echo "$0: Checking for non-empty ${OUTPUT_PATH}"
-if [ `grep -c 'adapter_khz' ${OUTPUT_PATH}` -ne 1 ] ; then
+if [ `grep -c 'adapter speed' ${OUTPUT_PATH}` -ne 1 ] ; then
         >&2 echo "$0: ERROR ${OUTPUT_PATH} has bad contents"
         exit 2
 fi
