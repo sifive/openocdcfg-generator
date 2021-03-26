@@ -123,7 +123,7 @@ def main(argv):
         parsed_args.dts, followIncludes=True)
 
     if "vcu118" in parsed_args.board:
-        adapter_khz = 20000
+        adapter_khz = 13000
     else:
         adapter_khz = 10000
 
